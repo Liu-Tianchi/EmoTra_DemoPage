@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anonymous TTS Demo</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --text: #1f2937;
+      --text-secondary: #6b7280;
+      --accent: #4f46e5;
+      --accent-light: #eef2ff;
+      --accent-hover: #4338ca;
+      --tag-bg: #f3f4f6;
+      --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.07);
+      --radius: 12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== Header ===== */
+    .hero {
+      text-align: center;
+      padding: 72px 24px 48px;
+      background: linear-gradient(160deg, #eef2ff 0%, #faf5ff 50%, #fdf2f8 100%);
+      border-bottom: 1px solid var(--border);
+    }
+    .hero h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .hero .subtitle {
+      margin-top: 12px;
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero .badge {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 6px 16px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-light);
+      border-radius: 999px;
+    }
+
+    /* ===== Disclaimer Banner ===== */
+    .disclaimer-section {
+      max-width: 820px;
+      margin: 36px auto 0;
+      padding: 0 24px;
+    }
+    .disclaimer-card {
+      background: #fffbeb;
+      border: 1px solid #f59e0b;
+      border-left: 4px solid #f59e0b;
+      border-radius: var(--radius);
+      padding: 22px 28px;
+      box-shadow: var(--shadow);
+    }
+    .disclaimer-card .disclaimer-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #92400e;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .disclaimer-card .disclaimer-title svg {
+      flex-shrink: 0;
+    }
+    .disclaimer-card p {
+      font-size: 0.9rem;
+      color: #78350f;
+      line-height: 1.75;
+    }
+
+    /* ===== Abstract ===== */
+    .abstract-section {
+      max-width: 820px;
+      margin: 28px auto 0;
+      padding: 0 24px;
+    }
+    .abstract-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      box-shadow: var(--shadow);
+    }
+    .abstract-card h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .abstract-card p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    /* ===== Main Content ===== */
+    .container {
+      max-width: 1100px;
+      padding: 40px 24px 80px;
+    }
+
+    /* ===== Section Title ===== */
+    .section-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .section-desc {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+    }
+
+    /* ===== Sample Card ===== */
+    .sample-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+      transition: box-shadow .2s;
+    }
+    .sample-card:hover { box-shadow: var(--shadow-md); }
+
+    .sample-card .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .sample-card .text-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .sample-card .text-content {
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 8px;
+      padding: 12px 16px;
+      background: var(--tag-bg);
+      border-radius: 8px;
+      line-height: 1.7;
+    }
+    .sample-card .emotion-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #9333ea;
+      margin-bottom: 6px;
+    }
+    .sample-card .voice-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #166534;
+      margin-bottom: 6px;
+    }
+    .tag-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+    .tag-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .emotion-transition {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+      border: 1px solid #d8b4fe;
+      border-radius: 8px;
+    }
+    .voice-source {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+      border: 1px solid #86efac;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #166534;
+    }
+    .voice-source .voice-icon {
+      font-size: 0.9rem;
+    }
+    .emotion-transition .emo-tag {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #7c3aed;
+    }
+    .emotion-transition .emo-arrow {
+      color: #a78bfa;
+      font-size: 1rem;
+    }
+
+    /* ===== Audio Grid ===== */
+    .audio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .audio-item {
+      background: var(--tag-bg);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      transition: background .15s;
+    }
+    .audio-item:hover { background: #eef0f4; }
+    .audio-item .system-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .audio-item .cat-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      letter-spacing: 0.02em;
+      color: #fff;
+    }
+    .cat-tag.cat-a { background: #64748b; }
+    .cat-tag.cat-b { background: #16a34a; }
+    .cat-tag.cat-c { background: #0891b2; }
+    .cat-tag.cat-d { background: #2563eb; }
+    .cat-tag.cat-e { background: #7c3aed; }
+    .cat-tag.cat-f { background: #c026d3; }
+    .cat-tag.cat-g { background: #e11d48; }
+    .cat-tag.cat-h { background: #ea580c; }
+    .audio-item .method-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .method-tag.tag-vad       { background: #dbeafe; color: #1e40af; }
+    .method-tag.tag-instruct  { background: #dcfce7; color: #166534; }
+    .method-tag.tag-prompt    { background: #fef3c7; color: #92400e; }
+    .method-tag.tag-none      { background: #f3f4f6; color: #6b7280; }
+    /* Injection architecture tags */
+    .arch-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 5px;
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+    .arch-tag.arch-linear     { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+    .arch-tag.arch-mlplora    { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+    .arch-tag.arch-mlpadd     { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .arch-tag.arch-film       { background: #fce7f3; color: #9d174d; border: 1px solid #f9a8d4; }
+    .arch-tag.arch-normclamp  { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+    .arch-tag.arch-dirmag     { background: #ede9fe; color: #5b21b6; border: 1px solid #c4b5fd; font-weight: 700; }
+    /* Dual-Stage SFT tags */
+    .sft-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 5px;
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+    .sft-tag.sft-woflow   { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .sft-tag.sft-emotra    { background: #ede9fe; color: #5b21b6; border: 1px solid #c4b5fd; font-weight: 700; }
+    /* Epsilon tags */
+    .eps-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 5px;
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+    .eps-tag.eps-004  { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+    .eps-tag.eps-010  { background: #fce7f3; color: #9d174d; border: 1px solid #f9a8d4; }
+    .eps-tag.eps-007  { background: #ede9fe; color: #5b21b6; border: 1px solid #c4b5fd; font-weight: 700; }
+    .audio-item audio {
+      width: 100%;
+      height: 36px;
+      border-radius: 6px;
+    }
+    .volume-warn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #dc2626;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 5px;
+      padding: 2px 8px;
+      margin-bottom: 6px;
+      animation: pulse-warn 2s ease-in-out infinite;
+    }
+    @keyframes pulse-warn {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* ===== Tabs ===== */
+    .tab-bar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 32px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0;
+    }
+    .tab-btn {
+      padding: 10px 20px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color .15s, border-color .15s;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      font-weight: 600;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ===== Floating Legend Sidebar ===== */
+    .legend-sidebar {
+      position: fixed;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      width: 280px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      z-index: 100;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .legend-sidebar h3 {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .legend-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .legend-item:last-child { margin-bottom: 0; }
+    .legend-item .legend-key {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 1px;
+    }
+    .legend-key.key-a { background: #64748b; }
+    .legend-key.key-b { background: #16a34a; }
+    .legend-key.key-c { background: #0891b2; }
+    .legend-key.key-d { background: #2563eb; }
+    .legend-key.key-e { background: #7c3aed; }
+    .legend-key.key-f { background: #c026d3; }
+    .legend-key.key-g { background: #e11d48; }
+    .legend-key.key-h { background: #ea580c; }
+    .legend-item .legend-text {
+      font-size: 0.78rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .legend-item .legend-text strong {
+      font-weight: 600;
+    }
+    .legend-item .legend-text span {
+      color: var(--text-secondary);
+      font-size: 0.73rem;
+    }
+    .legend-item .legend-systems {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .legend-item .legend-systems .sys-chip {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--accent-light);
+      color: var(--accent);
+      letter-spacing: 0.01em;
+    }
+
+    .legend-toggle {
+      display: none;
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 101;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    /* ===== Main layout adjustment ===== */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+      margin-right: max(calc((100vw - 1100px) / 2), 320px);
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1500px) {
+      .container { margin-right: 320px; }
+    }
+    @media (max-width: 900px) {
+      .audio-grid { grid-template-columns: repeat(2, 1fr); }
+      .legend-sidebar { display: none; }
+      .legend-sidebar.open { display: block; top: 60px; transform: none; right: 12px; width: 260px; }
+      .legend-toggle { display: flex; }
+      .container { margin-right: auto; }
+    }
+    @media (max-width: 640px) {
+      .hero { padding: 48px 16px 36px; }
+      .hero h1 { font-size: 1.6rem; }
+      .audio-grid { grid-template-columns: 1fr; }
+      .sample-card { padding: 20px; }
+      .tab-btn { padding: 8px 14px; font-size: 0.82rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="badge">Anonymous Submission</div>
+    <h1>EmoTra-TTS Demo Page</h1>
+    <p class="subtitle">
+      Audio samples for the paper: <em>"EmoTra-TTS: Smooth Intra-Utterance Emotion Transitions for Speech Synthesis"</em>, submitted to ARR 2026.
+    </p>
+  </header>
+
+  <!-- Abstract -->
+  <section class="abstract-section">
+    <div class="abstract-card">
+      <h2>Abstract</h2>
+      <p>
+        EmoTra-TTS is an emotional TTS system that enables smooth, controllable intra-utterance emotion transitions by modeling emotions as continuous dynamics through frame-level VAD conditioning.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main -->
+  <main class="container">
+
+    <!-- Tabs -->
+    <div class="tab-bar" id="tabBar">
+      <button class="tab-btn active" data-tab="tab-comparison">System Comparison</button>
+      <button class="tab-btn" data-tab="tab-ablation2">Ablation</button>
+    </div>
+
+    <!-- Tab 1: System Comparison -->
+    <div class="tab-content active" id="tab-comparison">
+      <h2 class="section-title">System Comparison</h2>
+      <p class="section-desc">Comparing our proposed method against baseline systems. All samples are synthesized from the same text input. [Important] All texts are NOT included in the training set.</p>
+
+      <!-- Sample 1: Sage (F), Angry → Sad -->
+      <div class="sample-card">
+        <div class="text-label">Text</div>
+        <div class="text-content">Sample text 1 — The shocking text left him wide-eyed and then deeply sorrowful.</div>
+        <div class="tag-row">
+          <div class="tag-group">
+            <div class="emotion-label">Emotion Transition</div>
+            <div class="emotion-transition">
+              <span class="emo-tag">Surprised</span>
+              <span class="emo-arrow">&#10230;</span>
+              <span class="emo-tag">Sad</span>
+            </div>
+          </div>
+          <div class="tag-group">
+            <div class="voice-label">Voice Source</div>
+            <div class="voice-source"><span class="voice-icon">&#9792;</span> EmoVoice-DB-Sage</div>
+          </div>
+        </div>
+        <div class="audio-grid">
+          <div class="audio-item"><div class="system-name">Qwen3-TTS</div><span class="cat-tag cat-a">(a) Neutral Prompt Speech Only</span><audio controls preload="none"><source src="audios/comparison/sample1/a-qwen3.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">MOSS-TTS</div><span class="cat-tag cat-b">(b) Instruct Only; No Speaker Info.</span><audio controls preload="none"><source src="audios/comparison/sample1/b-moss.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">EmoVoice</div><span class="cat-tag cat-c">(c) Instruct + Neutral Prompt Speech</span><audio controls preload="none"><source src="audios/comparison/sample1/c-emo.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">CosyVoice2</div><span class="cat-tag cat-d">(d) Emo Prompt Speech + Concat</span><audio controls preload="none"><source src="audios/comparison/sample1/d-cy2cat.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">ElevenLabs v3</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample1/h-elevenlabs.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">gpt-4o-mini-tts</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample1/h-gpt4omini.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">Synthetic Data (ours)</div><span class="cat-tag cat-f">(f) Synthetic Data</span><audio controls preload="none"><source src="audios/comparison/sample1/f-sys.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">EmoTra-TTS (Proposed)</div><span class="cat-tag cat-g">(g) Proposed EmoTra</span><audio controls preload="none"><source src="audios/comparison/sample1/g-Emotra.wav" type="audio/wav"></audio></div>
+        </div>
+      </div>
+
+      <!-- Sample 2: Ash (M), Sad → Angry -->
+      <div class="sample-card">
+        <div class="text-label">Text</div>
+        <div class="text-content">Sample text 2 — He joked with his neighbor but learning about the old dog passing crushed him.</div>
+        <div class="tag-row">
+          <div class="tag-group">
+            <div class="emotion-label">Emotion Transition</div>
+            <div class="emotion-transition">
+              <span class="emo-tag">Happy</span>
+              <span class="emo-arrow">&#10230;</span>
+              <span class="emo-tag">Sad</span>
+            </div>
+          </div>
+          <div class="tag-group">
+            <div class="voice-label">Voice Source</div>
+            <div class="voice-source"><span class="voice-icon">&#9794;</span> EmoVoice-DB-Ash</div>
+          </div>
+        </div>
+        <div class="audio-grid">
+          <div class="audio-item"><div class="system-name">CosyVoice2</div><span class="cat-tag cat-a">(a) Neutral Prompt Speech Only</span><audio controls preload="none"><source src="audios/comparison/sample2/a-cy2.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">Qwen3-TTS</div><span class="cat-tag cat-b">(b) Instruct Only; No Speaker Info.</span><audio controls preload="none"><source src="audios/comparison/sample2/b-qwen.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">MOSS-TTS</div><span class="cat-tag cat-d">(d) Emo Prompt Speech + Concat</span><audio controls preload="none"><source src="audios/comparison/sample2/d-MOSS.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">WeSCon</div><span class="cat-tag cat-e">(e) Emo Prompt Speech + Word-leve</span><audio controls preload="none"><source src="audios/comparison/sample2/wescon.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">ElevenLabs v3</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample2/h-elevenlabs.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">gpt-4o-mini-tts</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample2/h-gpt4omini.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">Synthetic Data (ours)</div><span class="cat-tag cat-f">(f) Synthetic Data</span><audio controls preload="none"><source src="audios/comparison/sample2/f-sys.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">EmoTra-TTS (Proposed)</div><span class="cat-tag cat-g">(g) Proposed EmoTra</span><audio controls preload="none"><source src="audios/comparison/sample2/g-Emotra.wav" type="audio/wav"></audio></div>
+        </div>
+      </div>
+
+      <!-- Sample 3: Sage (F), Happy → Angry -->
+      <div class="sample-card">
+        <div class="text-label">Text</div>
+        <div class="text-content">Sample text 3 — The weather was so bad that day, and I was sadly walking home when I suddenly saw something that made me extremely angry.</div>
+        <div class="tag-row">
+          <div class="tag-group">
+            <div class="emotion-label">Emotion Transition</div>
+            <div class="emotion-transition">
+              <span class="emo-tag">Sad</span>
+              <span class="emo-arrow">&#10230;</span>
+              <span class="emo-tag">Angry</span>
+            </div>
+          </div>
+          <div class="tag-group">
+            <div class="voice-label">Voice Source</div>
+            <div class="voice-source"><span class="voice-icon">&#9792;</span> EmoVoice-DB-Sage</div>
+          </div>
+        </div>
+        <div class="audio-grid">
+          <div class="audio-item"><div class="system-name">MOSS-TTS</div><span class="cat-tag cat-a">(a) Neutral Prompt Speech Only</span><audio controls preload="none"><source src="audios/comparison/sample3/a-moss.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">CosyVoice2</div><span class="cat-tag cat-c">(c) Instruct + Neutral Prompt Speech</span><audio controls preload="none"><source src="audios/comparison/sample3/c-cy2.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">MOSS-TTS</div><span class="cat-tag cat-d">(d) Emo Prompt Speech + Concat</span><span class="volume-warn">&#9888; Volume Change</span><audio controls preload="none"><source src="audios/comparison/sample3/d-moss.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">WeSCon</div><span class="cat-tag cat-e">(e) Emo Prompt Speech + Word-level</span><audio controls preload="none"><source src="audios/comparison/sample3/e.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">ElevenLabs v3</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample3/h-elevenlabs.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">gpt-4o-mini-tts</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample3/h-gpt4omini.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">Synthetic Data (ours)</div><span class="cat-tag cat-f">(f) Synthetic Data</span><span class="volume-warn">&#9888; Volume Change</span><audio controls preload="none"><source src="audios/comparison/sample3/f.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">EmoTra-TTS (Proposed)</div><span class="cat-tag cat-g">(g) Proposed EmoTra</span><span class="volume-warn">&#9888; Volume Change</span><audio controls preload="none"><source src="audios/comparison/sample3/g.wav" type="audio/wav"></audio></div>
+        </div>
+      </div>
+
+      <!-- Sample 4: Ash (M), Happy → Sad -->
+      <div class="sample-card">
+        <div class="text-label">Text</div>
+        <div class="text-content">Sample text 4 — His furious shouting stopped when a strange shadow made his blood run cold.</div>
+        <div class="tag-row">
+          <div class="tag-group">
+            <div class="emotion-label">Emotion Transition</div>
+            <div class="emotion-transition">
+              <span class="emo-tag">Angry</span>
+              <span class="emo-arrow">&#10230;</span>
+              <span class="emo-tag">Fearful</span>
+            </div>
+          </div>
+          <div class="tag-group">
+            <div class="voice-label">Voice Source</div>
+            <div class="voice-source"><span class="voice-icon">&#9794;</span> EmoVoice-DB-Ash</div>
+          </div>
+        </div>
+        <div class="audio-grid">
+          <div class="audio-item"><div class="system-name">CosyVoice2</div><span class="cat-tag cat-a">(a) Neutral Prompt Speech Only</span><audio controls preload="none"><source src="audios/comparison/sample4/a-cy2.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">MOSS-TTS</div><span class="cat-tag cat-b">(b) Instruct Only; No Speaker Info.</span><audio controls preload="none"><source src="audios/comparison/sample4/b-moss.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">EmoVoice</div><span class="cat-tag cat-c">(c) Instruct + Neutral Prompt Speech</span><audio controls preload="none"><source src="audios/comparison/sample4/c-emov.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">Qwen3-TTS</div><span class="cat-tag cat-d">(d) Emo Prompt Speech + Concat</span><audio controls preload="none"><source src="audios/comparison/sample4/d-qwen.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">ElevenLabs v3</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample4/h-elevenlabs.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">gpt-4o-mini-tts</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample4/h-gpt4omini.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">Synthetic Data (ours)</div><span class="cat-tag cat-f">(f) Synthetic Data</span><audio controls preload="none"><source src="audios/comparison/sample4/f.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">EmoTra-TTS (Proposed)</div><span class="cat-tag cat-g">(g) Proposed EmoTra</span><audio controls preload="none"><source src="audios/comparison/sample4/g.wav" type="audio/wav"></audio></div>
+        </div>
+      </div>
+
+      <!-- Sample 5: Sage (F), Sad → Surprised -->
+      <div class="sample-card">
+        <div class="text-label">Text</div>
+        <div class="text-content">Sample text 5 — He cursed at the jammed printer and then chuckled when it suddenly worked again.</div>
+        <div class="tag-row">
+          <div class="tag-group">
+            <div class="emotion-label">Emotion Transition</div>
+            <div class="emotion-transition">
+              <span class="emo-tag">Angry</span>
+              <span class="emo-arrow">&#10230;</span>
+              <span class="emo-tag">Happy</span>
+            </div>
+          </div>
+          <div class="tag-group">
+            <div class="voice-label">Voice Source</div>
+            <div class="voice-source"><span class="voice-icon">&#9792;</span> EmoVoice-DB-Sage</div>
+          </div>
+        </div>
+        <div class="audio-grid">
+          <div class="audio-item"><div class="system-name">Qwen3-TTS</div><span class="cat-tag cat-a">(a) Neutral Prompt Speech Only</span><audio controls preload="none"><source src="audios/comparison/sample5/a-qwen.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">Qwen3-TTS</div><span class="cat-tag cat-b">(b) Instruct Only; No Speaker Info.</span><audio controls preload="none"><source src="audios/comparison/sample5/b-qwen3.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">CosyVoice2</div><span class="cat-tag cat-c">(c) Instruct + Neutral Prompt Speech</span><audio controls preload="none"><source src="audios/comparison/sample5/c-cy2.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">Qwen3-TTS</div><span class="cat-tag cat-d">(d) Emo Prompt Speech + Concat</span><audio controls preload="none"><source src="audios/comparison/sample5/d-qwen.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">ElevenLabs v3</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample5/h-elevenlabs.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">gpt-4o-mini-tts</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample5/h-gpt4omini.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">Synthetic Data (ours)</div><span class="cat-tag cat-f">(f) Synthetic Data</span><audio controls preload="none"><source src="audios/comparison/sample5/f.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">EmoTra-TTS (Proposed)</div><span class="cat-tag cat-g">(g) Proposed EmoTra</span><audio controls preload="none"><source src="audios/comparison/sample5/g.wav" type="audio/wav"></audio></div>
+        </div>
+      </div>
+
+      <!-- Sample 6: Ash (M), Angry → Surprised -->
+      <div class="sample-card">
+        <div class="text-label">Text</div>
+        <div class="text-content">Sample text 6 — He felt surprised at the unexpected award, then sadness when he realized a friend was overlooked.</div>
+        <div class="tag-row">
+          <div class="tag-group">
+            <div class="emotion-label">Emotion Transition</div>
+            <div class="emotion-transition">
+              <span class="emo-tag">Surprised</span>
+              <span class="emo-arrow">&#10230;</span>
+              <span class="emo-tag">Sad</span>
+            </div>
+          </div>
+          <div class="tag-group">
+            <div class="voice-label">Voice Source</div>
+            <div class="voice-source"><span class="voice-icon">&#9794;</span> EmoVoice-DB-Ash</div>
+          </div>
+        </div>
+        <div class="audio-grid">
+          <div class="audio-item"><div class="system-name">MOSS-TTS</div><span class="cat-tag cat-b">(b) Instruct Only; No Speaker Info.</span><audio controls preload="none"><source src="audios/comparison/sample6/b-moss.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">EmoVoice</div><span class="cat-tag cat-c">(c) Instruct + Neutral Prompt Speech</span><audio controls preload="none"><source src="audios/comparison/sample6/c-emovoice.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">CosyVoice2</div><span class="cat-tag cat-d">(d) Emo Prompt Speech + Concat</span><audio controls preload="none"><source src="audios/comparison/sample6/d-cy2.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">WeSCon</div><span class="cat-tag cat-e">(e) Emo Prompt Speech + Word-level</span><audio controls preload="none"><source src="audios/comparison/sample6/e.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">ElevenLabs v3</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample6/h-elevenlabs.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">gpt-4o-mini-tts</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample6/h-gpt4omini.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">Synthetic Data (ours)</div><span class="cat-tag cat-f">(f) Synthetic Data</span><audio controls preload="none"><source src="audios/comparison/sample6/f.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">EmoTra-TTS (Proposed)</div><span class="cat-tag cat-g">(g) Proposed EmoTra</span><audio controls preload="none"><source src="audios/comparison/sample6/g.wav" type="audio/wav"></audio></div>
+        </div>
+      </div>
+
+      <!-- Sample 7: Sage (F), Neutral → Fearful -->
+      <div class="sample-card">
+        <div class="text-label">Text</div>
+        <div class="text-content">Sample text 7 — She jumped at the shadow and then felt true terror as it moved closer.</div>
+        <div class="tag-row">
+          <div class="tag-group">
+            <div class="emotion-label">Emotion Transition</div>
+            <div class="emotion-transition">
+              <span class="emo-tag">Surprised</span>
+              <span class="emo-arrow">&#10230;</span>
+              <span class="emo-tag">Fearful</span>
+            </div>
+          </div>
+          <div class="tag-group">
+            <div class="voice-label">Voice Source</div>
+            <div class="voice-source"><span class="voice-icon">&#9792;</span> EmoVoice-DB-Sage</div>
+          </div>
+        </div>
+        <div class="audio-grid">
+          <div class="audio-item"><div class="system-name">CosyVoice2</div><span class="cat-tag cat-a">(a) Neutral Prompt Speech Only</span><audio controls preload="none"><source src="audios/comparison/sample7/a-cy2.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">MOSS-TTS</div><span class="cat-tag cat-b">(b) Instruct Only; No Speaker Info.</span><audio controls preload="none"><source src="audios/comparison/sample7/b-moss.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">EmoVoice</div><span class="cat-tag cat-c">(c) Instruct + Neutral Prompt Speech</span><audio controls preload="none"><source src="audios/comparison/sample7/c-emov.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">CosyVoice2</div><span class="cat-tag cat-d">(d) Emo Prompt Speech + Concat</span><audio controls preload="none"><source src="audios/comparison/sample7/d-cy2.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">ElevenLabs v3</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample7/h-elevenlabs.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">gpt-4o-mini-tts</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample7/h-gpt4omini.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">Synthetic Data (ours)</div><span class="cat-tag cat-f">(f) Synthetic Data</span><audio controls preload="none"><source src="audios/comparison/sample7/f.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">EmoTra-TTS (Proposed)</div><span class="cat-tag cat-g">(g) Proposed EmoTra</span><audio controls preload="none"><source src="audios/comparison/sample7/g.wav" type="audio/wav"></audio></div>
+        </div>
+      </div>
+
+      <!-- Sample 8: Ash (M), Happy → Fearful -->
+      <div class="sample-card">
+        <div class="text-label">Text</div>
+        <div class="text-content">Sample text 8 — She smiled at the gift but reading the mocking note inside made her rage.</div>
+        <div class="tag-row">
+          <div class="tag-group">
+            <div class="emotion-label">Emotion Transition</div>
+            <div class="emotion-transition">
+              <span class="emo-tag">Happy</span>
+              <span class="emo-arrow">&#10230;</span>
+              <span class="emo-tag">Angry</span>
+            </div>
+          </div>
+          <div class="tag-group">
+            <div class="voice-label">Voice Source</div>
+            <div class="voice-source"><span class="voice-icon">&#9794;</span> EmoVoice-DB-Ash</div>
+          </div>
+        </div>
+        <div class="audio-grid">
+          <div class="audio-item"><div class="system-name">CosyVoice2</div><span class="cat-tag cat-a">(a) Neutral Prompt Speech Only</span><audio controls preload="none"><source src="audios/comparison/sample8/a-cy2.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">Qwen3-TTS</div><span class="cat-tag cat-d">(d) Emo Prompt Speech + Concat</span><audio controls preload="none"><source src="audios/comparison/sample8/d-qwen.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">MOSS-TTS</div><span class="cat-tag cat-d">(d) Emo Prompt Speech + Concat</span><audio controls preload="none"><source src="audios/comparison/sample8/d-moss.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">CosyVoice2</div><span class="cat-tag cat-d">(d) Emo Prompt Speech + Concat</span><audio controls preload="none"><source src="audios/comparison/sample8/d-cy2.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">ElevenLabs v3</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample8/h-elevenlabs.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">gpt-4o-mini-tts</div><span class="cat-tag cat-h">(h) Closed-Source Commercial TTS</span><audio controls preload="none"><source src="audios/comparison/sample8/h-gpt4omini.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">Synthetic Data (ours)</div><span class="cat-tag cat-f">(f) Synthetic Data</span><audio controls preload="none"><source src="audios/comparison/sample8/f.wav" type="audio/wav"></audio></div>
+          <div class="audio-item"><div class="system-name">EmoTra-TTS (Proposed)</div><span class="cat-tag cat-g">(g) Proposed EmoTra</span><audio controls preload="none"><source src="audios/comparison/sample8/g.wav" type="audio/wav"></audio></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tab 3: Ablation -->
+    <div class="tab-content" id="tab-ablation2">
+
+      <!-- Sub-section: Dual-Stage SFT -->
+      <h2 class="section-title">Dual-Stage SFT</h2>
+      <p class="section-desc">Comparing with and without flow-matching SFT in the dual-stage training pipeline. Corresponds to Section 5.3 of the manuscript.</p>
+
+      <div class="sample-card">
+        <div class="text-label">Text</div>
+        <div class="text-content">Sample text — I was really disappointed about what happened, but the more I think about it, the more angry I feel.</div>
+        <div class="tag-row">
+          <div class="tag-group">
+            <div class="emotion-label">Emotion Transition</div>
+            <div class="emotion-transition">
+              <span class="emo-tag">Sad</span>
+              <span class="emo-arrow">&#10230;</span>
+              <span class="emo-tag">Angry</span>
+            </div>
+          </div>
+        </div>
+        <div class="audio-grid">
+          <div class="audio-item">
+            <div class="system-name"><span class="sft-tag sft-woflow">w/o flow SFT</span></div>
+            <audio controls preload="none">
+              <source src="audios/ablation_sft/sample1/wo_flow_sft.wav" type="audio/wav">
+            </audio>
+          </div>
+          <div class="audio-item">
+            <div class="system-name"><span class="sft-tag sft-emotra">EmoTra ★</span></div>
+            <audio controls preload="none">
+              <source src="audios/ablation_sft/sample1/emotra.wav" type="audio/wav">
+            </audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-section: Fixed Scale Epsilon -->
+      <h2 class="section-title" style="margin-top: 40px;">Fixed Scale &epsilon;</h2>
+      <p class="section-desc">Comparing different fixed scale &epsilon; values for the direction–magnitude injection. Corresponds to Section 5.4 of the manuscript.</p>
+
+      <div class="sample-card">
+        <div class="text-label">Text</div>
+        <div class="text-content">Sample text — She smiled at the gift but reading the mocking note inside made her rage</div>
+        <div class="tag-row">
+          <div class="tag-group">
+            <div class="emotion-label">Emotion Transition</div>
+            <div class="emotion-transition">
+              <span class="emo-tag">Happy</span>
+              <span class="emo-arrow">&#10230;</span>
+              <span class="emo-tag">Angry</span>
+            </div>
+          </div>
+        </div>
+        <div class="audio-grid">
+          <div class="audio-item">
+            <div class="system-name"><span class="eps-tag eps-004">&epsilon; = 0.04 ★</span></div>
+            <audio controls preload="none">
+              <source src="audios/ablation_eps/sample1/04.wav" type="audio/wav">
+            </audio>
+          </div>
+          <div class="audio-item">
+            <div class="system-name"><span class="eps-tag eps-010">&epsilon; = 0.10</span></div>
+            <audio controls preload="none">
+              <source src="audios/ablation_eps/sample1/10.wav" type="audio/wav">
+            </audio>
+          </div>
+          <div class="audio-item">
+            <div class="system-name"><span class="eps-tag eps-007">&epsilon; = 0.07 ★</span></div>
+            <audio controls preload="none">
+              <source src="audios/ablation_eps/sample1/07.wav" type="audio/wav">
+            </audio>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer>
+    <p>Anonymous Demo Page for EmoTra-TTS</p>
+  </footer>
+
+  <!-- Legend Toggle (mobile) -->
+  <button class="legend-toggle" id="legendToggle" aria-label="Toggle legend">&#9776;</button>
+
+  <!-- Floating Legend Sidebar -->
+  <aside class="legend-sidebar" id="legendSidebar">
+    <h3>System Legend</h3>
+    <div class="legend-item">
+      <div class="legend-key key-a">a</div>
+      <div class="legend-text">
+        <strong>Neutral Prompt Speech Only</strong><br>
+        <span>Neutral prompt speech; no emotion conditioning</span>
+        <div class="legend-systems">
+          <span class="sys-chip">Qwen3-TTS</span>
+          <span class="sys-chip">MOSS-TTS</span>
+          <span class="sys-chip">CosyVoice2</span>
+        </div>
+      </div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-key key-b">b</div>
+      <div class="legend-text">
+        <strong>Instruct Only; No Speaker Info.</strong><br>
+        <span>Natural-language emotion instruction; no speaker information</span>
+        <div class="legend-systems">
+          <span class="sys-chip">Qwen3-TTS</span>
+          <span class="sys-chip">MOSS-TTS</span>
+        </div>
+      </div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-key key-c">c</div>
+      <div class="legend-text">
+        <strong>Instruct + Neutral Prompt Speech</strong><br>
+        <span>Natural-language emotion instruction with neutral prompt speech</span>
+        <div class="legend-systems">
+          <span class="sys-chip">CosyVoice2</span>
+          <span class="sys-chip">EmoVoice</span>
+        </div>
+      </div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-key key-d">d</div>
+      <div class="legend-text">
+        <strong>Emo Prompt Speech + Concat</strong><br>
+        <span>Generate each emotion segment separately, then concatenate</span>
+        <div class="legend-systems">
+          <span class="sys-chip">Qwen3-TTS</span>
+          <span class="sys-chip">MOSS-TTS</span>
+          <span class="sys-chip">CosyVoice2</span>
+        </div>
+      </div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-key key-e">e</div>
+      <div class="legend-text">
+        <strong>Emo Prompt Speech + Word-level</strong><br>
+        <span>Word-level emotion generation control</span>
+        <div class="legend-systems">
+          <span class="sys-chip">WeSCon</span>
+        </div>
+      </div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-key key-f">f</div>
+      <div class="legend-text"><strong>Synthetic Data (ours)</strong><br><span>Our synthetic training data using multi-pass flow blending</span></div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-key key-g">g</div>
+      <div class="legend-text"><strong>Proposed EmoTra (ours)</strong><br><span>Continuous VAD conditioning with smooth intra-utterance transition</span></div>
+    </div>
+    <div class="legend-item">
+      <div class="legend-key key-h">h</div>
+      <div class="legend-text">
+        <strong>Closed-Source Commercial TTS</strong><br>
+        <span>Proprietary commercial TTS systems, including the two below</span>
+        <div class="legend-systems">
+          <span class="sys-chip">ElevenLabs v3</span>
+          <span class="sys-chip">gpt-4o-mini-tts</span>
+        </div>
+        <span style="display:block; margin-top:8px;"><strong>ElevenLabs v3</strong>: ElevenLabs' latest TTS system; emotion is controlled by manually inserting discrete Audio Tags. Following the official guidance, "Stability" is set to "Creative" to increase expressiveness.</span>
+        <span style="display:block; margin-top:6px;"><strong>gpt-4o-mini-tts</strong>: From OpenAI's GPT-4o audio family, accessed via API; emotion and transitions are controlled via a natural-language instruction prompt.</span>
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    // Tab switching + legend sidebar visibility
+    const tabBar = document.getElementById('tabBar');
+    const legendSidebar = document.getElementById('legendSidebar');
+    const container = document.querySelector('.container');
+
+    tabBar.addEventListener('click', (e) => {
+      const btn = e.target.closest('.tab-btn');
+      if (!btn) return;
+      tabBar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+
+      // Hide legend sidebar on non-comparison tabs, show on Comparison
+      if (btn.dataset.tab === 'tab-comparison') {
+        legendSidebar.style.display = '';
+        container.style.marginRight = '';
+      } else {
+        legendSidebar.style.display = 'none';
+        container.style.marginRight = 'auto';
+      }
+    });
+
+    // Legend toggle (mobile)
+    document.getElementById('legendToggle').addEventListener('click', () => {
+      legendSidebar.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
