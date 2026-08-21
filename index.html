@@ -83,6 +83,40 @@
       background: var(--accent-light);
       border-radius: 999px;
     }
+    .hero-links {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 12px 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      text-decoration: none;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease, border-color .18s ease, color .18s ease;
+    }
+    .hero-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .hero-btn.primary {
+      color: #fff;
+      background: linear-gradient(135deg, #4f46e5 0%, #db2777 100%);
+      box-shadow: 0 6px 18px rgba(79,70,229,.28);
+    }
+    .hero-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(219,39,119,.32); filter: saturate(1.05); }
+    .hero-btn.code {
+      color: #fff;
+      background: #0d1117;
+      box-shadow: 0 6px 18px rgba(13,17,23,.24);
+    }
+    .hero-btn.code:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(13,17,23,.34); }
+    .hero-btn.is-disabled { opacity: .5; pointer-events: none; cursor: default; }
 
     /* ===== Disclaimer Banner ===== */
     .disclaimer-section {
@@ -549,6 +583,17 @@
     <p class="subtitle">
       Audio samples for the paper: <em>"EmoTra-TTS: Smooth Intra-Utterance Emotion Transitions for Speech Synthesis"</em>, accepted to EMNLP 2026.
     </p>
+    <div class="hero-links">
+      <!-- TODO: replace href="#" with the paper URL and remove the is-disabled class -->
+      <a class="hero-btn primary is-disabled" href="#" title="Paper link coming soon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+        Paper
+      </a>
+      <a class="hero-btn code" href="https://github.com/Liu-Tianchi/EmoTra-TTS" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Code
+      </a>
+    </div>
   </header>
 
   <!-- Abstract -->
